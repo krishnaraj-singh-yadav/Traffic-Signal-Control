@@ -1,0 +1,72 @@
+module sgnlcnlTB;
+
+	// Inputs
+	reg x;
+	reg p;
+	reg q;
+	reg r;
+	reg s;
+	reg clr;
+	reg clk;
+
+	// Outputs
+	wire [1:0] hwc;
+	wire [1:0] hwg;
+	wire [1:0] cnc;
+	wire [1:0] cng;
+
+	// Instantiate the Unit Under Test (UUT)
+	sgnlcnl2lane uut (
+		.x(x), 
+		.p(p), 
+		.q(q), 
+		.r(r), 
+		.s(s), 
+		.clr(clr), 
+		.clk(clk), 
+		.hwc(hwc), 
+		.hwg(hwg), 
+		.cnc(cnc), 
+		.cng(cng)
+	);
+	always begin
+	clk=~clk;end
+
+	initial begin
+		// Initialize Inputs
+		x = 0;
+		p = 0;
+		q = 0;
+		r = 0;
+		s = 0;
+		clr = 1;
+		//clk = 0;
+
+		// Wait 100 ns for global reset to finish
+		#10;
+		x=1;
+		p=0;
+		q=0;
+		r=0;
+		s=0;
+		clr=0;
+		
+		#100;
+		x=1;
+		p=1;
+		q=0;
+		r=0;
+		s=0;
+        #10;
+		x=1;
+		p=0;
+		q=1;
+		r=0;
+		s=0;
+        
+		// Add stimulus here
+		$monitor($time,"x=%b,p=%b,q=%b,r=%b,s=%b",x,p,q,r,s);
+
+	end
+      
+endmodule
