@@ -1,0 +1,199 @@
+`timescale 1ns / 1ps
+//`define true 1'b1
+//`define false 1'b0
+`define Y2RDELAY 2
+`define R2GDELAY 2
+`define R2BDELAY 2 
+`define B2GDELAY 2
+`define G2YDELAY 2
+`define B2YDELAY 2
+//x= vehical present at country side
+module sgnlcnl2lane(x,p,q,r,s,clr,clk, hwc,hwg,cnc,cng
+    );
+	 input x,p,q,r,s;
+	 input clk,clr;
+	 output reg [1:0] hwc,hwg, cnc,cng;
+	 parameter green = 2'd0, 
+	           yellow = 2'd1,  
+	           blue = 2'd2,
+				     red = 2'd3 ;
+	 parameter  s0=4'd0,
+				      s1=4'd1,
+				      s2=4'd2,
+				      s3=4'd3,
+				      s4=4'd4,
+						  s5=4'd5,
+						  s6=4'd6,
+						  s7=4'd7,
+						  s8=4'd8,
+						  s9=4'd9,
+              s10=4'd10,
+              s11=4'd11;								
+				 reg [3:0] state;
+				 reg [3:0] next_state;
+				 always @(posedge clk)
+				 if (clr)
+				 state<=s0;
+				 else
+				 state<=next_state;
+				 always @(state) 
+				 
+				 begin
+				 hwc=green;
+				 hwg=green;
+				 cnc=red;
+				 cng=red;
+				          case (state)
+				           s0: ;
+		           		  s1: begin
+           			    hwc=yellow ; hwg=yellow ; cnc=blue; cng=blue; 
+							 end 
+							  s2: begin
+           			    hwc=blue ; hwg=blue ; cnc=blue; cng=blue; 
+							 end
+							  s3: begin
+           			    hwc=blue;hwg=blue ; cnc=green; cng=green; 
+							 end
+							  s4: begin
+           			    hwc=blue;hwg=blue ; cnc=yellow; cng=yellow; 
+							 end
+							  s5: begin
+           			    hwc=blue;hwg=blue ; cnc=blue; cng=blue; 
+							 end
+							  s6: begin
+           			    hwc=green;hwg=green ; cnc=blue; cng=blue; 
+							 end
+							  s7: begin
+           			    hwc=yellow;hwg=yellow ; cnc=blue; cng=blue; 
+							 end
+							   s8:begin
+							 hwc=red ; hwg=red ; cnc=green; cng=red ;
+							 end
+							  s9:begin
+							 hwc=red ; hwg=red ; cnc=red ; cng=green ;
+							 end
+							  s10:begin
+							 hwc=green ; hwg=red ; cnc=red ; cng=red ;
+							 end
+							  s11:begin
+							 hwc=red ; hwg=green ; cnc=red ; cng=red ;
+							 end
+							  
+							  
+				 endcase
+				 end
+				  always @(state , x , p,q,r,s)
+				 begin case(state)
+				 s0: if (x)
+begin if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+		  
+next_state =s1;
+end
+				 else next_state =s0;
+				 s1: begin 
+				 repeat (`Y2RDELAY) next_state = s1;repeat(`R2BDELAY) next_state = s1 ;
+				 if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+				 next_state = s2;
+				 end
+				   s2: begin 
+				 repeat (`B2GDELAY) next_state = s2;
+				 repeat(`B2YDELAY) next_state = s2;
+				 if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+				 next_state = s3;
+				 end
+				   s3: begin 
+				 repeat (`G2YDELAY) next_state = s3;
+				 if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+				 next_state = s4;
+				 end
+				   s4: begin 
+				 repeat (`B2YDELAY) next_state = s4;
+				 if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+				 next_state = s5;
+				 end
+				   s5: begin 
+				 repeat (`B2GDELAY) next_state = s5 ;
+				 if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+				 next_state = s6;
+				 end
+				  s6: if (x)
+				  begin if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+		  
+next_state =s7;
+end
+				 else next_state= s0;
+				  s7 : begin 
+				 repeat (`G2YDELAY) next_state = s7; repeat(`R2BDELAY) next_state = s7;
+				 if(p)
+      next_state=s8;
+else if(q)
+next_state=s9;
+else if(r)
+next_state=s10;
+else if(s)
+next_state=s11;
+else
+				 next_state = s0;
+				 end
+				 default :next_state =s0;
+				 endcase 
+				 end
+
+
+endmodule    
